@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wuysbio - Profile</title>
+
+<style>
+  /* --- RESET & CƠ BẢN --- */
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100%;
+    overflow: hidden; 
+  }
+
+  /* --- LIVE VIDEO BACKGROUND --- */
+  #video-background {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    background-size: cover;
+    filter: brightness(0.7) blur(2px); 
+  }
+  
+  /* ------------------------------- */
+
+  /* --- LỚP CHE PHỦ TỔNG (LAYER) --- */
+  .layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    transition: opacity 0.7s ease-in-out; 
+    z-index: 10;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2); 
+    padding-top: 15vh;
+  }
+
+  /* Layer 1: Màn hình chờ - CLICK ANYWHERE */
+  #layer1 {
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    backdrop-filter: blur(3px); 
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    justify-content: center;
+  }
+  
+  /* Text hướng dẫn click anywhere */
+  #click-anywhere {
+    font-size: clamp(1em, 4vw, 1.5em);
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
+    animation: pulse 2s infinite;
+    padding: 0 20px;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+  
+  /* Layer 2: Chứa Profile Card */
+  #layer2 {
+    opacity: 0;
+    pointer-events: none;
+    background: none;
+    backdrop-filter: none;
+    padding: 15px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    padding-top: 12vh;
+    overflow-y: auto; 
+  }
+  
+  /* --- PROFILE CARD (Thẻ Hồ sơ) --- */
+  #profile-card {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: clamp(15px, 4vw, 40px);
+    max-width: min(380px, 92vw);
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: white;
+    transition: all 0.5s ease;
+    position: relative;
+    margin-top: 0;
+    min-height: 400px;
+  }
+
+  /* --- MENU NAVIGATION --- */
+  #hamburger-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 100;
+    transition: background 0.2s;
+  }
+  #hamburger-btn:hover {
+    background: #CCAAFF;
+    color: #333;
+  }
+  
+  #sidebar {
+    position: absolute;
+    top: 55px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 8px;
+  }
+
+  #sidebar.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #sidebar button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9em;
+    border-radius: 5px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  #sidebar button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* --- VIEW CONTAINERS (Nội dung thay đổi) --- */
+  .page-content {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 20px;
+    box-sizing: border-box;
+  }
+
+  .page-content.active-page {
+    display: flex;
+  }
+
+  /* --- VISITOR COUNT --- */
+  #visitor-count {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: clamp(0.65em, 2.8vw, 0.75em);
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+  }
+
+  /* --- AVATAR & TEXT (Thuộc Main View) --- */
+  #avatar-container {
+    position: relative;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #CCAAFF;
+    width: clamp(70px, 18vw, 100px);
+    height: clamp(70px, 18vw, 100px);
+  }
+  #avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #welcome-title {
+    font-size: clamp(1.8em, 7vw, 2.5em);
+    margin-bottom: 4px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+    color: white;
+  }
+
+  #intro-text {
+    font-size: clamp(0.85em, 3.5vw, 1.1em);
+    color: #CCAAFF;
+    margin-bottom: 6px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  #bio-text {
+    font-size: clamp(0.75em, 3vw, 0.95em);
+    margin-bottom: 25px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0 5px;
+  }
+
+  /* --- SOCIAL BUTTONS --- */
+  #social-links {
+    display: flex;
+    gap: clamp(8px, 2.5vw, 15px);
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 10px;
+  }
+  #social-links a {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: clamp(32px, 9vw, 40px);
+    height: clamp(32px, 9vw, 40px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+  #social-links a:hover {
+    background: #CCAAFF;
+    transform: scale(1.1);
+    border-color: #CCAAFF;
+  }
+  #social-links a img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  #social-links a:hover img {
+    transform: scale(1.1);
+  }
+
+  /* --- PAYMENT INFO STYLES (Thuộc Payment View) --- */
+  #payment-view {
+    padding-top: 0px;
+  }
+  
+  #scan-me-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(1.6em, 6vw, 2em);
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+  }
+
+  #qr-code-img {
+    max-width: 200px;
+    width: 80%;
+    height: auto;
+    border-radius: 10px;
+    border: 5px solid white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+  }
+
+  #bank-info-list {
+    text-align: left;
+    width: 100%;
+    max-width: 320px;
+    font-size: 0.9em;
+    padding: 0 5px;
+  }
+
+  #bank-info-list strong {
+    color: #CCAAFF; 
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 1em;
+  }
+
+  .account-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 3px 0;
+  }
+
+  .account-number {
+    word-break: break-word;
+    flex-grow: 1;
+    margin-right: 10px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 3px 6px;
+    font-size: 0.7em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+    min-width: 40px; 
+  }
+
+  .copy-btn:hover {
+    background: #CCAAFF;
+    color: #333;
+  }
+  
+  /* --- COPYRIGHT & MUSIC PLAYER --- */
+  #copyright {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.65em, 2.5vw, 0.75em);
+    color: rgba(255, 255, 255, 0.6);
+    z-index: 100;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    width: 100%;
+    text-align: center;
+  }
+
+  #music-footer {
+    position: fixed;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(94%, 600px);
+    padding: clamp(8px, 2.5vw, 15px) clamp(12px, 3.5vw, 25px);
+    margin-bottom: clamp(8px, 2.5vw, 20px);
+    background: rgba(100, 100, 100, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 50;
+    transition: all 0.5s ease;
+    opacity: 0;
+    pointer-events: none;
+    gap: 8px;
+  }
+
+  #music-footer.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #track-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+    padding-right: 8px;
+    min-width: 0;
+  }
+
+  /* FIX: Album Art - SỬA QUAN TRỌNG */
+  #album-art {
+    width: clamp(32px, 9vw, 45px);
+    height: clamp(32px, 9vw, 45px);
+    background: #333; /* Fallback màu nền */
+    background-image: url('album_default.jpg'); /* QUAN TRỌNG: Đường dẫn đúng */
+    background-size: cover; /* Đảm bảo ảnh cover toàn bộ */
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .track-text {
+    min-width: 0;
+    flex-grow: 1;
+  }
+
+  #track-name {
+    font-size: clamp(0.75em, 2.8vw, 0.9em);
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 1.2em;
+  }
+  
+  #progress-time {
+    font-size: clamp(0.65em, 2.3vw, 0.8em);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  #controls {
+    display: flex;
+    align-items: center;
+    gap: clamp(2px, 0.8vw, 5px);
+    flex-shrink: 0;
+  }
+
+  #controls button {
+    padding: clamp(5px, 1.8vw, 8px) clamp(6px, 2.2vw, 12px);
+    margin: 0;
+    font-size: clamp(0.8em, 3.2vw, 1em);
+    min-width: auto;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #controls button:hover:not(:disabled) {
+    color: #CCAAFF;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  #controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #stop-btn {
+    font-size: clamp(0.75em, 2.8vw, 0.9em) !important;
+  }
+
+  .loop-active {
+    color: #CCAAFF !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* --- MEDIA QUERIES --- */
+  @media (max-width: 480px) {
+    .layer {
+      padding-top: 10vh;
+    }
+    
+    #layer2 {
+      padding: 10px;
+      padding-top: 8vh;
+    }
+    
+    #profile-card {
+      padding: 20px 15px;
+      max-width: 95vw;
+      min-height: 350px;
+    }
+    
+    #avatar-container {
+      width: 65px;
+      height: 65px;
+      margin-bottom: 12px;
+    }
+    
+    #welcome-title {
+      font-size: 1.6em;
+      margin-bottom: 3px;
+    }
+    
+    #intro-text {
+      font-size: 0.8em;
+      margin-bottom: 4px;
+    }
+    
+    #bio-text {
+      font-size: 0.7em;
+      margin-bottom: 20px;
+      padding: 0 3px;
+    }
+    
+    #social-links {
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    
+    #social-links a {
+      width: 30px;
+      height: 30px;
+    }
+    
+    #music-footer {
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 12px;
+      bottom: 30px;
+      border-radius: 10px;
+    }
+    
+    #track-info {
+      padding-right: 0;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    #controls {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    #copyright {
+      bottom: 5px;
+      font-size: 0.65em;
+    }
+    
+    #qr-code-img {
+      max-width: 150px;
+    }
+    
+    .account-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .copy-btn {
+      margin-top: 5px;
+      align-self: flex-end;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .layer {
+      padding-top: 18vh;
+    }
+    
+    #layer2 {
+      padding-top: 15vh;
+    }
+    
+    #profile-card {
+      max-width: 450px;
+      padding: 50px;
+      min-height: 450px;
+    }
+    
+    #avatar-container {
+      width: 120px;
+      height: 120px;
+    }
+    
+    #welcome-title {
+      font-size: 3em;
+    }
+    
+    #intro-text {
+      font-size: 1.2em;
+    }
+    
+    #bio-text {
+      font-size: 1em;
+    }
+    
+    #music-footer {
+      bottom: 50px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<video autoplay muted loop id="video-background">
+  <source src="background.mp4" type="video/mp4"> 
+  Trình duyệt của bạn không hỗ trợ thẻ video.
+</video>
+
+<!-- LAYER 1: LOADING SCREEN -->
+<div class="layer" id="layer1" onclick="showLayer2()">
+  <div id="click-anywhere">🔄 loading...</div>
+</div>
+
+<!-- LAYER 2: MAIN CONTENT -->
+<div class="layer" id="layer2">
+    <button id="hamburger-btn" onclick="toggleSidebar()">☰</button>
+    
+    <div id="sidebar">
+        <button onclick="showView('main')">🏡 Main Profile</button>
+        <button onclick="showView('payment')">💳 Payment Info</button>
+    </div>
+
+    <div id="profile-card">
+        <div id="visitor-count">Visitors: <span id="visitor-count-number">0</span></div>
+
+        <!-- MAIN PROFILE VIEW -->
+        <div id="main-view" class="page-content active-page">
+            <div id="avatar-container">
+                <img id="avatar" src="avatar.jpg" alt="Avatar"> 
+            </div>
+            
+            <h1 id="welcome-title">Welcome, world.</h1>
+            <h2 id="intro-text">Hi~i I'm Wuys, This is my bio.</h2>
+            <h3 id="bio-text">All of my info are here, you can check out for yourself.</h3>
+            
+            <div id="social-links">
+                <a href="https://www.facebook.com/bbinaty.2007" target="_blank" title="Facebook">
+                    <img src="/logo/facebook.png" alt="Facebook">
+                </a> 
+                <a href="https://www.tiktok.com/@huyden_" target="_blank" title="TikTok">
+                    <img src="/logo/tiktok.png" alt="TikTok">
+                </a>
+                <a href="https://www.roblox.com/users/8786162226/profile" target="_blank" title="Roblox">
+                    <img src="/logo/roblox.png" alt="Roblox">
+                </a>
+                <a href="http://wuysnee.atwebpages.com/" target="_blank" title="My Website">
+                    <img src="/logo/myprofile.png" alt="My Website">
+                </a>
+            </div>
+        </div>
+
+        <!-- PAYMENT INFO VIEW -->
+        <div id="payment-view" class="page-content">
+            <div id="scan-me-title">Scan Me To Pay ↓</div>
+
+            <img id="qr-code-img" src="qr.png" alt="QR Code Payment"> 
+            
+            <div id="bank-info-list">
+                <strong>Bank Info (offerings accepted, Vietnam currency only):</strong>
+                
+                <div class="account-item">
+                    <span class="account-number" id="mb-bank">MB Bank: 88881242078888</span>
+                    <button class="copy-btn" onclick="copyText('88881242078888', this)">Copy</button>
+                </div>
+
+                <div class="account-item">
+                    <span class="account-number" id="techcombank">Techcombank: 99998888686836</span>
+                    <button class="copy-btn" onclick="copyText('99998888686836', this)">Copy</button>
+                </div>
+                
+                <div class="account-item">
+                    <span class="account-number" id="bidv-1">BIDV: 8844848705</span>
+                    <button class="copy-btn" onclick="copyText('8844848705', this)">Copy</button>
+                </div>
+                
+                <div class="account-item">
+                    <span class="account-number" id="bidv-2">BIDV: 8873737012</span>
+                    <button class="copy-btn" onclick="copyText('8873737012', this)">Copy</button>
+                </div>
+                
+                <div class="account-item">
+                    <span class="account-number" id="momo-etc">Momo / ZaloPay / gachthe1s.com: 0941434002</span>
+                    <button class="copy-btn" onclick="copyText('0941434002', this)">Copy</button>
+                </div>
+                
+                <div class="account-item">
+                    <span class="account-number" id="paypal">PayPal (International): paypal.me/Wuysnee</span>
+                    <button class="copy-btn" onclick="copyText('paypal.me/Wuysnee', this)">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer id="copyright">©2025 By Wuys.</footer>
+
+<!-- MUSIC PLAYER -->
+<div id="music-footer">
+    <audio id="audio-element"></audio> 
+    <div id="track-info">
+      <div id="album-art"></div>
+      <div class="track-text">
+        <div id="track-name">Loading music...</div>
+        <div id="progress-time">0:00 / 0:00</div>
+      </div>
+    </div>
+    
+    <div id="controls">
+      <button onclick="player.toggleLoop()" id="loop-btn" title="Lặp lại bài hát hiện tại">🔄</button>
+      <button onclick="player.previousTrack()" title="Bài trước">⏮️</button>
+      <button onclick="player.stopTrack()" id="stop-btn" title="Dừng">⏹️</button>
+      <button onclick="player.togglePlayPause()" id="play-pause-btn" title="Phát/Tạm dừng">▶️</button>
+      <button onclick="player.nextTrack()" title="Bài tiếp">⏭️</button>
+    </div>
+</div>
+
+<script>
+// BIẾN TOÀN CỤC CHO VIDEO LOAD
+let isVideoReady = false;
+
+// TIMER 3 GIÂY CHO VIDEO
+setTimeout(() => {
+    isVideoReady = true;
+    document.getElementById('click-anywhere').textContent = "click anywhere to continue...";
+}, 3000);
+
+// Visitor Counter
+let visitorCount = localStorage.getItem('visitorCount') || 0;
+visitorCount = parseInt(visitorCount) + 1;
+localStorage.setItem('visitorCount', visitorCount);
+document.getElementById('visitor-count-number').textContent = visitorCount;
+
+// Khai báo đối tượng quản lý nhạc
+const player = {
+    audio: null,
+    playPauseBtn: null,
+    loopBtn: null,
+    trackNameDisplay: null,
+    progressTimeDisplay: null,
+    isLoading: false, 
+    
+    tracks: [
+        { name: "Nếu Em Còn Tồn Tại - Trịnh Đình Quang", file: "music/song1.mp3" },
+        { name: "Tối - Dkayz & Brian", file: "music/song2.mp3" },
+        { name: "Đầu Đường Xó Chợ", file: "music/song3.mp3" },
+        { name: "Đoá Hoa", file: "music/song4.mp3" },
+        { name: "GOODBYE ROCKY", file: "music/song5.mp3" },
+        { name: " DONALD GOLD - ADAMN", file: "music/song6.mp3" },
+        { name: "Tham Phú Phụ Hồ", file: "music/song7.mp3" },
+        { name: "Thủ Đô Cypher - Beck Stage X Biti s Hunter ( RPT Orijinn, LOW G, RZMas, RPT MCK)", file: "music/song8.mp3" },
+        { name: "Wxrdie - TETVOVEN ", file: "music/song9.mp3" },
+        { name: "Rap Chậm Thôi ( #HNDCMM ) - RPT MCK x RPT Orijinn ft  Rz Ma$", file: "music/song10.mp3" },
+        { name: "Yello $osa - CHENCO TALK ft. Kwang Hy", file: "music/song11.mp3" },
+        { name: "Ducky Glizzy - Trốn làm sao được x @betekar x @yellososa", file: "music/song12.mp3" },
+        { name: "𝙊𝙂𝙍𝙔𝙕𝙀𝙆 - 𝙅𝙀𝙎𝙐𝙎 (𝙐𝙇𝙏𝙍𝘼 𝙎𝙇𝙊𝙒𝙀𝘿 + 𝙍𝙀𝙑𝙀𝙍𝘽)", file: "music/song13.mp3" },
+        { name: "Melodia Extraordinária - DJ LE4K (Slowed & Reverb)", file: "music/song14.mp3" },
+        { name: "MONTAGEM RUGADA", file: "music/song15.mp3" },
+        { name: "NO BATIDÃO (Slowed)", file: "music/song16.mp3" },
+        { name: "Ogryzek - AURA (super slowed + reverb)", file: "music/song17.mp3" },
+        { name: "Sayfalse, TRXVELER & DJ ALIM - DARE (Slowed)", file: "music/song18.mp3" },
+        { name: "Gà Quấn Giấy Bạc - VEGAS 2016 _ THÁI HOÀNG REMIX ", file: "music/song19.mp3" },
+        { name: "KHÓC CÙNG EM VER.2 _ THÁI HOÀNG REMIX", file: "music/song20.mp3" }
+    ],
+    currentTrackIndex: 0,
+    isPlaying: false,
+
+    formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return min + ':' + (sec < 10 ? '0' : '') + sec;
+    },
+
+    init() {
+        this.audio = document.getElementById('audio-element');
+        this.playPauseBtn = document.getElementById('play-pause-btn');
+        this.loopBtn = document.getElementById('loop-btn');
+        this.trackNameDisplay = document.getElementById('track-name');
+        this.progressTimeDisplay = document.getElementById('progress-time');
+        
+        this.audio.loop = false;
+        this.loopBtn.classList.remove('loop-active');
+
+        this.audio.addEventListener('loadedmetadata', () => {
+            this.progressTimeDisplay.textContent = `0:00 / ${this.formatTime(this.audio.duration)}`;
+        });
+
+        this.audio.ontimeupdate = () => {
+            const currentTime = this.formatTime(this.audio.currentTime);
+            const duration = this.formatTime(this.audio.duration);
+            this.progressTimeDisplay.textContent = `${currentTime} / ${duration}`;
+        };
+
+        // Đặt album art mặc định
+        this.setAlbumArt('album_default.jpg');
+    },
+
+    setAlbumArt(imageUrl) {
+        const albumArt = document.getElementById('album-art');
+        if (albumArt) {
+            albumArt.style.backgroundImage = `url('${imageUrl}')`;
+        }
+    },
+
+    updatePlayPauseButton(isCurrentlyPlaying) {
+        if (isCurrentlyPlaying) {
+            this.playPauseBtn.textContent = '⏸️';
+            this.playPauseBtn.title = 'Tạm dừng';
+        } else {
+            this.playPauseBtn.textContent = '▶️';
+            this.playPauseBtn.title = 'Phát';
+        }
+    },
+
+    loadRandomTrack() {
+        if (this.tracks.length === 0) return;
+        const randomIndex = Math.floor(Math.random() * this.tracks.length);
+        this.loadTrack(randomIndex);
+    },
+
+    loadTrack(index) {
+        if (this.isLoading) {
+            console.log("Đang load, bỏ qua click...");
+            return;
+        }
+        this.isLoading = true;
+        
+        if (this.tracks.length === 0) {
+            this.trackNameDisplay.textContent = "Không có bài hát nào.";
+            this.isLoading = false;
+            return;
+        }
+        
+        this.currentTrackIndex = index % this.tracks.length;
+        if (this.currentTrackIndex < 0) {
+            this.currentTrackIndex = this.tracks.length - 1;
+        }
+
+        const track = this.tracks[this.currentTrackIndex];
+        
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+        }
+        
+        this.audio.src = track.file;
+        this.trackNameDisplay.textContent = "⏳ " + track.name;
+        
+        // Cập nhật album art tùy theo bài hát (có thể thêm logic tùy chỉnh sau)
+        // Hiện tại dùng mặc định
+        this.setAlbumArt('album_default.jpg');
+        
+        const onLoaded = () => {
+            this.isLoading = false;
+            this.trackNameDisplay.textContent = track.name;
+        };
+
+        const onError = () => {
+            this.isLoading = false;
+            this.trackNameDisplay.textContent = "❌ Lỗi: " + track.name;
+            setTimeout(() => {
+                this.loadTrack(this.currentTrackIndex);
+            }, 2000);
+        };
+
+        this.audio.onended = null;
+        this.audio.oncanplaythrough = null;
+        this.audio.onerror = null;
+
+        this.audio.addEventListener('canplaythrough', onLoaded, { once: true });
+        this.audio.addEventListener('error', onError, { once: true });
+
+        this.audio.onended = () => {
+            if (!this.audio.loop) {
+                this.nextTrack();
+            }
+        };
+
+        this.audio.play().then(() => {
+            this.isPlaying = true;
+            this.updatePlayPauseButton(true);
+        }).catch(error => {
+            this.isLoading = false;
+            console.log("Autoplay bị chặn: ", error);
+            this.isPlaying = false;
+            this.updatePlayPauseButton(false);
+            this.trackNameDisplay.textContent = "▶️ " + track.name;
+        });
+    },
+
+    togglePlayPause() {
+        if (this.isLoading) return;
+        
+        if (this.audio.paused) {
+            this.audio.play()
+                .then(() => {
+                    this.isPlaying = true;
+                    this.updatePlayPauseButton(true);
+                })
+                .catch(error => {
+                    console.error("Play bị chặn: ", error);
+                    this.isPlaying = false;
+                    this.updatePlayPauseButton(false);
+                });
+        } else {
+            this.audio.pause();
+            this.isPlaying = false;
+            this.updatePlayPauseButton(false);
+        }
+    },
+
+    stopTrack() {
+        if (this.isLoading) return;
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.isPlaying = false;
+        this.updatePlayPauseButton(false);
+    },
+
+    toggleLoop() {
+        if (this.isLoading) return;
+        this.audio.loop = !this.audio.loop;
+        if (this.audio.loop) {
+            this.loopBtn.classList.add('loop-active');
+            this.loopBtn.title = 'Đang lặp lại bài hát';
+        } else {
+            this.loopBtn.classList.remove('loop-active');
+            this.loopBtn.title = 'Lặp lại bài hát hiện tại';
+        }
+    },
+
+    nextTrack() {
+        if (this.isLoading) return;
+        if (this.audio.loop) {
+            this.toggleLoop();
+        }
+        this.loadTrack(this.currentTrackIndex + 1);
+    },
+
+    previousTrack() {
+        if (this.isLoading) return;
+        if (this.audio.loop) {
+            this.toggleLoop();
+        }
+        this.loadTrack(this.currentTrackIndex - 1);
+    }
+};
+
+// Khởi tạo trình phát nhạc khi trang load
+window.onload = () => {
+    player.init();
+};
+
+// LOGIC CHUYỂN LAYER VÀ MENU
+
+// Hàm chính chuyển từ Layer 1 sang Layer 2
+function showLayer2() {
+    if (!isVideoReady) {
+        document.getElementById('click-anywhere').textContent = "🔄 i'm still loading, please wait...";
+        return;
+    }
+    
+    document.getElementById('layer1').style.opacity = 0;
+    document.getElementById('layer1').style.pointerEvents = 'none';
+    
+    const layer2 = document.getElementById('layer2');
+    layer2.style.opacity = 1;
+    layer2.style.pointerEvents = 'auto';
+
+    const musicFooter = document.getElementById('music-footer');
+    musicFooter.classList.add('active');
+
+    player.loadRandomTrack();
+    
+    // HIỂN THỊ TRANG CHÍNH BAN ĐẦU
+    showView('main');
+}
+
+// Hàm chuyển đổi giữa các trang (main hoặc payment)
+function showView(viewName) {
+    // Ẩn sidebar sau khi click
+    document.getElementById('sidebar').classList.remove('active');
+    
+    const views = document.querySelectorAll('.page-content');
+    views.forEach(view => {
+        view.classList.remove('active-page');
+    });
+
+    const targetView = document.getElementById(viewName + '-view');
+    if (targetView) {
+        targetView.classList.add('active-page');
+    }
+}
+
+// Hàm bật/tắt sidebar
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+}
+
+// HÀM COPY TEXT
+function copyText(textToCopy, buttonElement) {
+    navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = 'Copied!';
+            buttonElement.style.backgroundColor = '#4CAF50'; 
+            
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+                buttonElement.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'; 
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Lỗi khi sao chép: ', err);
+            alert('Không thể sao chép tự động. Vui lòng sao chép thủ công: ' + textToCopy);
+        });
+}
+</script>
+
+</body>
+</html>

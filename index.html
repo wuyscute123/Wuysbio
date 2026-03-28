@@ -3,931 +3,665 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Wuysbio - Profile</title>
+<title>Wuys — Personal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  /* --- RESET & CƠ BẢN --- */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    height: 100%;
-    overflow: hidden; 
-  }
+/* ═══════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  /* --- LIVE VIDEO BACKGROUND --- */
-  #video-background {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -100;
-    background-size: cover;
-    filter: brightness(0.7) blur(2px); 
-  }
-  
-  /* --- LỚP CHE PHỦ TỔNG (LAYER) --- */
-  .layer {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    transition: opacity 0.7s ease-in-out; 
-    z-index: 10;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.2); 
-    padding-top: 15vh;
-  }
+:root {
+  --purple:      #c8a8ff;
+  --purple-dim:  rgba(200,168,255,0.12);
+  --purple-glow: rgba(200,168,255,0.35);
+  --gold:        #e8c97a;
+  --white:       #f4f1ff;
+  --muted:       rgba(244,241,255,0.5);
+  --card:        rgba(8,5,20,0.68);
+  --border:      rgba(200,168,255,0.16);
+  --font-serif:  'Cormorant Garamond', Georgia, serif;
+  --font-sans:   'Outfit', sans-serif;
+  --radius:      22px;
+  --ease:        cubic-bezier(.4,0,.2,1);
+}
 
-  /* Layer 1: Màn hình chờ - CLICK ANYWHERE */
-  #layer1 {
-    color: white;
-    padding: 20px;
-    box-sizing: border-box;
-    backdrop-filter: blur(3px); 
-    background: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    justify-content: center;
-  }
-  
-  /* Text hướng dẫn click anywhere */
-  #click-anywhere {
-    font-size: clamp(1em, 4vw, 1.5em);
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    margin-top: 20px;
-    animation: pulse 2s infinite;
-    padding: 0 20px;
-  }
+html, body { height:100%; overflow:hidden; font-family:var(--font-sans); background:#04030d; }
 
-  @keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
-  }
-  
-  /* Layer 2: Chứa Profile Card */
-  #layer2 {
-    opacity: 0;
-    pointer-events: none;
-    background: none;
-    backdrop-filter: none;
-    padding: 15px;
-    box-sizing: border-box;
-    justify-content: flex-start;
-    padding-top: 12vh;
-    overflow-y: auto; 
-  }
-  
-  /* --- PROFILE CARD (Thẻ Hồ sơ) --- */
-  #profile-card {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    border-radius: 20px;
-    padding: clamp(15px, 4vw, 40px);
-    max-width: min(380px, 92vw);
-    width: 100%;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    color: white;
-    transition: all 0.5s ease;
-    position: relative;
-    margin-top: 0;
-    min-height: 400px;
-  }
+/* ═══════════════════════════════════════
+   VIDEO BG + GRAIN
+═══════════════════════════════════════ */
+#video-background {
+  position:fixed; inset:0; width:100%; height:100%;
+  object-fit:cover; z-index:-2;
+  filter:brightness(.52) saturate(1.3);
+}
+body::after {
+  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  opacity:.45;
+}
 
-  /* --- MENU NAVIGATION --- */
-  #hamburger-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    font-size: 1.5em;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    z-index: 100;
-    transition: background 0.2s;
-  }
-  #hamburger-btn:hover {
-    background: #CCAAFF;
-    color: #333;
-  }
-  
-  #sidebar {
-    position: absolute;
-    top: 55px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    z-index: 99;
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    padding: 8px;
-  }
+/* ═══════════════════════════════════════
+   LAYERS
+═══════════════════════════════════════ */
+.layer {
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  text-align:center;
+  transition:opacity .9s var(--ease);
+  z-index:10;
+}
 
-  #sidebar.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+/* ── SPLASH ── */
+#layer1 {
+  cursor:pointer;
+  background:radial-gradient(ellipse at 50% 55%, rgba(28,8,65,.6) 0%, rgba(4,3,13,.9) 68%);
+  backdrop-filter:blur(10px);
+  gap:22px;
+}
 
-  #sidebar button {
-    background: none;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    text-align: left;
-    cursor: pointer;
-    font-size: 0.9em;
-    border-radius: 5px;
-    transition: background 0.2s;
-    white-space: nowrap;
-  }
-  #sidebar button:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
+.splash-eyebrow {
+  font-size:clamp(.65em,2vw,.8em); font-weight:500;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--purple);
+  opacity:0; animation:fadeUp .8s .2s var(--ease) forwards;
+}
+.splash-name {
+  font-family:var(--font-serif);
+  font-size:clamp(3.8em,15vw,9em);
+  font-weight:300; line-height:.9; letter-spacing:-.02em;
+  color:var(--white);
+  opacity:0; transform:translateY(22px);
+  animation:fadeUp 1s .4s var(--ease) forwards;
+}
+.splash-name em { font-style:italic; color:var(--purple); }
+.splash-line {
+  width:1px; height:52px;
+  background:linear-gradient(to bottom, var(--purple-glow), transparent);
+  opacity:0; animation:fadeIn .8s 1s var(--ease) forwards;
+}
+#click-anywhere {
+  font-size:clamp(.68em,2.4vw,.8em); font-weight:400;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+  opacity:0; animation:breathe 3s 1.3s infinite, fadeIn .6s 1.2s var(--ease) forwards;
+}
 
-  /* --- VIEW CONTAINERS (Nội dung thay đổi) --- */
-  .page-content {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-top: 20px;
-    box-sizing: border-box;
-  }
+@keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn  { to { opacity:1; } }
+@keyframes breathe { 0%,100%{opacity:.4} 50%{opacity:.95} }
 
-  .page-content.active-page {
-    display: flex;
-  }
+/* ── PROFILE LAYER ── */
+#layer2 {
+  opacity:0; pointer-events:none;
+  justify-content:flex-start; align-items:center;
+  padding:clamp(10px,3vw,20px);
+  padding-top:clamp(58px,10vh,95px);
+  overflow-y:auto; background:none;
+}
 
-  /* --- VISITOR COUNT --- */
-  #visitor-count {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: clamp(0.65em, 2.8vw, 0.75em);
-    color: rgba(255, 255, 255, 0.7);
-    z-index: 10;
-  }
+/* ═══════════════════════════════════════
+   HAMBURGER
+═══════════════════════════════════════ */
+#hamburger-btn {
+  position:absolute; top:14px; left:14px;
+  width:38px; height:38px;
+  background:var(--purple-dim); border:1px solid var(--border);
+  border-radius:10px; color:var(--white);
+  cursor:pointer; z-index:200;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px;
+  transition:background .25s, border-color .25s, transform .2s;
+}
+#hamburger-btn:hover { background:var(--purple-glow); border-color:var(--purple); transform:scale(1.05); }
+#hamburger-btn span {
+  display:block; width:16px; height:1.5px;
+  background:var(--white); border-radius:2px; transition:all .3s;
+}
 
-  /* --- AVATAR & TEXT (Thuộc Main View) --- */
-  #avatar-container {
-    position: relative;
-    margin-bottom: 15px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #CCAAFF;
-    width: clamp(70px, 18vw, 100px);
-    height: clamp(70px, 18vw, 100px);
-  }
-  #avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  #welcome-title {
-    font-size: clamp(1.8em, 7vw, 2.5em);
-    margin-bottom: 4px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    line-height: 1.2;
-    color: white;
-  }
+/* ── DROPDOWN ── */
+#sidebar {
+  position:absolute; top:60px; left:14px;
+  background:rgba(6,4,16,.94); backdrop-filter:blur(24px);
+  border:1px solid var(--border); border-radius:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,.6);
+  z-index:199; display:flex; flex-direction:column;
+  padding:6px; min-width:180px;
+  opacity:0; pointer-events:none;
+  transform:translateY(-8px) scale(.97);
+  transition:opacity .25s, transform .25s;
+}
+#sidebar.active { opacity:1; pointer-events:auto; transform:translateY(0) scale(1); }
+#sidebar button {
+  background:none; border:none; color:rgba(244,241,255,.65);
+  padding:10px 14px; text-align:left; cursor:pointer;
+  font-family:var(--font-sans); font-size:.875em; font-weight:400;
+  border-radius:10px; white-space:nowrap; letter-spacing:.02em;
+  display:flex; align-items:center; gap:10px;
+  transition:background .2s, color .2s;
+}
+#sidebar button:hover { background:var(--purple-dim); color:var(--white); }
 
-  #intro-text {
-    font-size: clamp(0.85em, 3.5vw, 1.1em);
-    color: #CCAAFF;
-    margin-bottom: 6px;
-    font-weight: 400;
-    line-height: 1.3;
-  }
+/* ═══════════════════════════════════════
+   PROFILE CARD
+═══════════════════════════════════════ */
+#profile-card {
+  background:var(--card);
+  backdrop-filter:blur(32px) saturate(1.8);
+  -webkit-backdrop-filter:blur(32px) saturate(1.8);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:clamp(28px,5vw,52px);
+  max-width:min(415px,95vw); width:100%;
+  box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(200,168,255,.05), inset 0 1px 0 rgba(255,255,255,.07);
+  color:var(--white); position:relative;
+  animation:cardIn .75s .05s var(--ease) both;
+}
+#profile-card::before {
+  content:''; position:absolute;
+  top:-1px; left:20%; right:20%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple-glow),transparent);
+}
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(28px) scale(.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1); }
+}
 
-  #bio-text {
-    font-size: clamp(0.75em, 3vw, 0.95em);
-    margin-bottom: 25px;
-    font-weight: 300;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.9);
-    padding: 0 5px;
-  }
+/* ── VISITOR ── */
+#visitor-count {
+  position:absolute; top:14px; right:16px;
+  font-size:.68em; font-weight:400;
+  letter-spacing:.06em; color:var(--muted);
+}
+#visitor-count-number { color:var(--purple); font-weight:500; }
 
-  /* --- SOCIAL BUTTONS --- */
-  #social-links {
-    display: flex;
-    gap: clamp(8px, 2.5vw, 15px);
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding-bottom: 10px;
-  }
-  #social-links a {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: clamp(32px, 9vw, 40px);
-    height: clamp(32px, 9vw, 40px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-  }
-  #social-links a:hover {
-    background: #CCAAFF;
-    transform: scale(1.1);
-    border-color: #CCAAFF;
-  }
-  #social-links a img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-  #social-links a:hover img {
-    transform: scale(1.1);
-  }
+/* ═══════════════════════════════════════
+   PAGE TRANSITIONS
+═══════════════════════════════════════ */
+.page-content { display:none; width:100%; flex-direction:column; align-items:center; text-align:center; padding-top:14px; }
+.page-content.active-page { display:flex; animation:pageIn .4s var(--ease) both; }
+@keyframes pageIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-  /* --- PAYMENT INFO STYLES (ĐÃ XÓA CÁC NGÂN HÀNG KHÁC - CHỈ GIỮ TECHCOMBANK) --- */
-  #payment-view {
-    padding-top: 0px;
-  }
-  
-  #scan-me-title {
-    font-family: 'Georgia', serif;
-    font-size: clamp(1.6em, 6vw, 2em);
-    font-weight: bold;
-    color: #ffd700;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    margin-bottom: 15px;
-  }
+/* ═══════════════════════════════════════
+   AVATAR
+═══════════════════════════════════════ */
+.avatar-wrapper { position:relative; margin-bottom:20px; display:inline-block; }
+#avatar-container {
+  border-radius:50%; overflow:hidden;
+  width:clamp(82px,19vw,112px); height:clamp(82px,19vw,112px);
+  border:2px solid var(--border);
+  box-shadow:0 0 0 5px var(--purple-dim), 0 10px 36px rgba(0,0,0,.55);
+  transition:box-shadow .35s;
+}
+#avatar-container:hover { box-shadow:0 0 0 7px var(--purple-glow), 0 10px 36px rgba(0,0,0,.55); }
+#avatar { width:100%; height:100%; object-fit:cover; display:block; }
 
-  #qr-code-img {
-    max-width: 200px;
-    width: 80%;
-    height: auto;
-    border-radius: 10px;
-    border: 5px solid white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    margin-bottom: 20px;
-  }
+.status-dot {
+  position:absolute; bottom:4px; right:4px;
+  width:14px; height:14px;
+  background:#4ade80; border-radius:50%;
+  border:2.5px solid #0a0614;
+  box-shadow:0 0 6px rgba(74,222,128,.6);
+  animation:dotPulse 2.2s infinite;
+}
+@keyframes dotPulse { 0%,100%{box-shadow:0 0 6px rgba(74,222,128,.5)} 50%{box-shadow:0 0 14px rgba(74,222,128,.9)} }
 
-  #bank-info-list {
-    text-align: left;
-    width: 100%;
-    max-width: 320px;
-    font-size: 0.9em;
-    padding: 0 5px;
-  }
+/* ── TEXT ── */
+#welcome-title {
+  font-family:var(--font-serif);
+  font-size:clamp(2em,8.5vw,3.1em);
+  font-weight:300; line-height:1; letter-spacing:-.01em;
+  color:var(--white); margin-bottom:8px;
+}
+#welcome-title em { font-style:italic; color:var(--purple); }
+#intro-text {
+  font-size:clamp(.78em,3vw,.93em); font-weight:400;
+  color:var(--purple); margin-bottom:10px; letter-spacing:.03em;
+}
+.bio-divider {
+  width:30px; height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:8px auto 12px;
+}
+#bio-text {
+  font-size:clamp(.76em,2.8vw,.87em); font-weight:300;
+  line-height:1.7; color:var(--muted); margin-bottom:26px; padding:0 4px;
+}
 
-  #bank-info-list strong {
-    color: #CCAAFF; 
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    font-size: 1em;
-    text-align: center;
-  }
+/* ═══════════════════════════════════════
+   SOCIAL LINKS
+═══════════════════════════════════════ */
+#social-links {
+  display:flex; gap:12px; margin-bottom:6px;
+  flex-wrap:wrap; justify-content:center;
+}
+#social-links a {
+  position:relative;
+  width:clamp(42px,10.5vw,50px); height:clamp(42px,10.5vw,50px);
+  border-radius:14px;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  overflow:visible;
+  transition:transform .3s var(--ease), border-color .3s, background .3s, box-shadow .3s;
+  text-decoration:none;
+}
+#social-links a span.inner {
+  width:100%; height:100%; border-radius:13px;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+#social-links a:hover {
+  transform:translateY(-5px) scale(1.07);
+  border-color:var(--purple);
+  box-shadow:0 10px 28px rgba(200,168,255,.28);
+  background:var(--purple-dim);
+}
+#social-links a img {
+  width:55%; height:55%; object-fit:contain;
+  filter:brightness(0) invert(1); transition:transform .3s;
+}
+#social-links a:hover img { transform:scale(1.1); }
+#social-links a .tip {
+  position:absolute; bottom:-30px; left:50%;
+  transform:translateX(-50%) scale(.88);
+  background:rgba(6,4,16,.96); border:1px solid var(--border);
+  color:var(--white); font-size:.6em;
+  letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 9px; border-radius:6px;
+  white-space:nowrap; pointer-events:none;
+  opacity:0; transition:opacity .2s, transform .2s;
+}
+#social-links a:hover .tip { opacity:1; transform:translateX(-50%) scale(1); }
 
-  /* Chỉ hiển thị duy nhất một ngân hàng Techcombank */
-  .single-bank-card {
-    background: rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 16px 12px;
-    margin: 10px 0;
-    backdrop-filter: blur(4px);
-    transition: all 0.2s;
-  }
-  .account-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    padding: 5px 0;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .account-number {
-    word-break: break-word;
-    flex-grow: 1;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 500;
-    letter-spacing: 0.3px;
-  }
-  .copy-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: white;
-    padding: 6px 12px;
-    font-size: 0.75em;
-    cursor: pointer;
-    border-radius: 24px;
-    transition: all 0.2s;
-    min-width: 60px;
-    font-weight: 500;
-  }
-  .copy-btn:hover {
-    background: #CCAAFF;
-    color: #1a1a2e;
-    border-color: #CCAAFF;
-    transform: scale(0.97);
-  }
-  
-  /* --- COPYRIGHT & MUSIC PLAYER --- */
-  #copyright {
-    position: fixed;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: clamp(0.65em, 2.5vw, 0.75em);
-    color: rgba(255, 255, 255, 0.6);
-    z-index: 100;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-    width: 100%;
-    text-align: center;
-    pointer-events: none;
-  }
+/* ═══════════════════════════════════════
+   PAYMENT VIEW
+═══════════════════════════════════════ */
+#payment-view { padding-top:2px; }
+#scan-me-title {
+  font-family:var(--font-serif);
+  font-size:clamp(1.6em,6.5vw,2.1em);
+  font-weight:300; font-style:italic;
+  color:var(--gold); letter-spacing:.02em; margin-bottom:20px;
+}
+#qr-code-img {
+  max-width:185px; width:72%; border-radius:16px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 36px rgba(0,0,0,.5), 0 0 0 6px rgba(200,168,255,.07);
+  margin-bottom:22px;
+}
+#bank-info-list { width:100%; max-width:310px; }
+.bank-section-title {
+  display:block; font-size:.7em; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:14px;
+}
+.single-bank-card {
+  background:rgba(255,255,255,.05); border:1px solid var(--border);
+  border-radius:16px; padding:18px 16px; backdrop-filter:blur(8px);
+}
+.bank-name-row {
+  display:flex; align-items:center; gap:8px;
+  font-size:.8em; font-weight:500;
+  color:var(--purple); letter-spacing:.05em; margin-bottom:14px;
+}
+.bank-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--purple); box-shadow:0 0 6px var(--purple-glow);
+}
+.account-item { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+.account-label { font-size:.68em; color:var(--muted); margin-bottom:3px; letter-spacing:.05em; text-transform:uppercase; }
+.account-number { font-size:clamp(.9em,3.3vw,1.05em); font-weight:600; letter-spacing:.1em; color:var(--white); }
+.account-holder { font-size:.7em; color:var(--muted); margin-top:12px; letter-spacing:.05em; text-align:center; }
+.copy-btn {
+  background:var(--purple-dim); border:1px solid var(--border);
+  color:var(--white); padding:7px 17px;
+  font-size:.73em; font-weight:500; letter-spacing:.07em; text-transform:uppercase;
+  cursor:pointer; border-radius:100px; font-family:var(--font-sans);
+  transition:all .25s; white-space:nowrap;
+}
+.copy-btn:hover { background:var(--purple); color:#08050e; border-color:var(--purple); transform:scale(.97); }
 
-  #music-footer {
-    position: fixed;
-    bottom: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(94%, 600px);
-    padding: clamp(8px, 2.5vw, 15px) clamp(12px, 3.5vw, 25px);
-    margin-bottom: clamp(8px, 2.5vw, 20px);
-    background: rgba(100, 100, 100, 0.6);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 50;
-    transition: all 0.5s ease;
-    opacity: 0;
-    pointer-events: none;
-    gap: 8px;
-  }
+/* ═══════════════════════════════════════
+   MUSIC PLAYER
+═══════════════════════════════════════ */
+#music-footer {
+  position:fixed; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(12px);
+  width:min(95%,560px);
+  padding:12px 16px;
+  background:rgba(6,4,18,.84);
+  backdrop-filter:blur(28px) saturate(1.5);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(200,168,255,.04);
+  color:var(--white);
+  display:flex; justify-content:space-between; align-items:center;
+  z-index:50; gap:10px;
+  opacity:0; pointer-events:none;
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+}
+#music-footer.active { opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+#music-footer::before {
+  content:''; position:absolute; top:0; left:0; height:2px;
+  border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg, var(--purple), rgba(200,168,255,.15));
+  width:var(--prog, 0%); transition:width .5s linear;
+}
 
-  #music-footer.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
+#track-info { display:flex; align-items:center; flex:1; min-width:0; gap:10px; overflow:hidden; }
+#album-art {
+  width:clamp(34px,8vw,44px); height:clamp(34px,8vw,44px);
+  background:#111 url('album_default.jpg') center/cover;
+  border-radius:9px; border:1px solid var(--border);
+  flex-shrink:0; transition:border-color .3s;
+  animation:spinArt 10s linear infinite paused;
+}
+#album-art.playing { animation-play-state:running; border-color:var(--purple); }
+@keyframes spinArt { to { transform:rotate(360deg); } }
+.track-text { min-width:0; flex:1; }
+#track-name {
+  font-size:clamp(.72em,2.6vw,.88em); font-weight:500;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#progress-time { font-size:clamp(.6em,2vw,.72em); color:var(--muted); margin-top:2px; }
 
-  #track-info {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    overflow: hidden;
-    padding-right: 8px;
-    min-width: 0;
-  }
+#controls { display:flex; align-items:center; gap:2px; flex-shrink:0; }
+#controls button {
+  border:none; background:none; color:var(--muted);
+  cursor:pointer; padding:6px 8px; border-radius:8px;
+  font-size:clamp(.88em,3.2vw,1.1em);
+  display:flex; align-items:center; justify-content:center;
+  transition:color .2s, background .2s, transform .15s;
+}
+#controls button:hover:not(#play-pause-btn) { color:var(--white); background:var(--purple-dim); transform:scale(1.1); }
+#play-pause-btn {
+  background:var(--purple-dim) !important;
+  color:var(--purple) !important;
+  border:1px solid var(--border) !important;
+  width:36px; height:36px; border-radius:50%; padding:0;
+}
+#play-pause-btn:hover { background:var(--purple) !important; color:#08050e !important; transform:scale(1.1); }
+.loop-active { color:var(--purple) !important; }
 
-  #album-art {
-    width: clamp(32px, 9vw, 45px);
-    height: clamp(32px, 9vw, 45px);
-    background: #222;
-    background-image: url('album_default.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 8px;
-    margin-right: 8px;
-    flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
+/* ═══════════════════════════════════════
+   COPYRIGHT
+═══════════════════════════════════════ */
+#copyright {
+  position:fixed; bottom:8px; inset-inline:0;
+  text-align:center; font-size:clamp(.6em,2vw,.7em);
+  font-weight:300; letter-spacing:.1em;
+  color:rgba(244,241,255,.22); z-index:100; pointer-events:none;
+}
 
-  .track-text {
-    min-width: 0;
-    flex-grow: 1;
-  }
-
-  #track-name {
-    font-size: clamp(0.75em, 2.8vw, 0.9em);
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-height: 1.2em;
-  }
-  
-  #progress-time {
-    font-size: clamp(0.65em, 2.3vw, 0.8em);
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  #controls {
-    display: flex;
-    align-items: center;
-    gap: clamp(2px, 0.8vw, 5px);
-    flex-shrink: 0;
-  }
-
-  #controls button {
-    padding: clamp(5px, 1.8vw, 8px) clamp(6px, 2.2vw, 12px);
-    margin: 0;
-    font-size: clamp(0.8em, 3.2vw, 1em);
-    min-width: auto;
-    border: none;
-    background: none;
-    color: white;
-    cursor: pointer;
-    transition: color 0.2s;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #controls button:hover:not(:disabled) {
-    color: #CCAAFF;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  #controls button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  #stop-btn {
-    font-size: clamp(0.75em, 2.8vw, 0.9em) !important;
-  }
-
-  .loop-active {
-    color: #CCAAFF !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-  }
-
-  /* --- MEDIA QUERIES --- */
-  @media (max-width: 480px) {
-    .layer {
-      padding-top: 10vh;
-    }
-    
-    #layer2 {
-      padding: 10px;
-      padding-top: 8vh;
-    }
-    
-    #profile-card {
-      padding: 20px 15px;
-      max-width: 95vw;
-      min-height: 350px;
-    }
-    
-    #avatar-container {
-      width: 65px;
-      height: 65px;
-      margin-bottom: 12px;
-    }
-    
-    #welcome-title {
-      font-size: 1.6em;
-    }
-    
-    #intro-text {
-      font-size: 0.8em;
-    }
-    
-    #bio-text {
-      font-size: 0.7em;
-      margin-bottom: 20px;
-    }
-    
-    #social-links {
-      gap: 6px;
-      margin-bottom: 20px;
-    }
-    
-    #social-links a {
-      width: 30px;
-      height: 30px;
-    }
-    
-    #music-footer {
-      flex-direction: column;
-      gap: 8px;
-      padding: 10px 12px;
-      bottom: 30px;
-      border-radius: 10px;
-    }
-    
-    #track-info {
-      padding-right: 0;
-      width: 100%;
-      justify-content: center;
-    }
-    
-    #controls {
-      width: 100%;
-      justify-content: center;
-    }
-    
-    #copyright {
-      bottom: 5px;
-      font-size: 0.65em;
-    }
-    
-    #qr-code-img {
-      max-width: 150px;
-    }
-    
-    .account-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .copy-btn {
-      margin-top: 5px;
-      align-self: flex-end;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    .layer {
-      padding-top: 18vh;
-    }
-    
-    #layer2 {
-      padding-top: 15vh;
-    }
-    
-    #profile-card {
-      max-width: 450px;
-      padding: 50px;
-      min-height: 450px;
-    }
-    
-    #avatar-container {
-      width: 120px;
-      height: 120px;
-    }
-    
-    #welcome-title {
-      font-size: 3em;
-    }
-    
-    #intro-text {
-      font-size: 1.2em;
-    }
-    
-    #bio-text {
-      font-size: 1em;
-    }
-    
-    #music-footer {
-      bottom: 50px;
-    }
-  }
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width:480px) {
+  #layer2 { padding:10px; padding-top:clamp(52px,9vh,72px); }
+  #profile-card { padding:24px 18px; }
+  #music-footer { flex-direction:column; gap:8px; padding:12px 14px; bottom:26px; }
+  #track-info { width:100%; justify-content:center; }
+  #controls { width:100%; justify-content:center; }
+}
+@media (min-width:900px) { #profile-card { max-width:445px; } }
 </style>
 </head>
 <body>
 
-<video autoplay muted loop id="video-background">
-  <source src="background.mp4" type="video/mp4"> 
-  Trình duyệt của bạn không hỗ trợ thẻ video.
+<!-- VIDEO BG -->
+<video autoplay muted loop playsinline id="video-background">
+  <source src="background.mp4" type="video/mp4">
 </video>
 
-<!-- LAYER 1: LOADING SCREEN -->
+<!-- ═══ SPLASH SCREEN ═══ -->
 <div class="layer" id="layer1" onclick="showLayer2()">
-  <div id="click-anywhere">🔄 loading...</div>
+  <p class="splash-eyebrow">welcome to my space</p>
+  <h1 class="splash-name">Wu<em>ys</em></h1>
+  <div class="splash-line"></div>
+  <p id="click-anywhere">🔄 loading…</p>
 </div>
 
-<!-- LAYER 2: MAIN CONTENT -->
+<!-- ═══ MAIN CONTENT ═══ -->
 <div class="layer" id="layer2">
-    <button id="hamburger-btn" onclick="toggleSidebar()">☰</button>
-    
-    <div id="sidebar">
-        <button onclick="showView('main')">🏡 Main Profile</button>
-        <button onclick="showView('payment')">💳 Payment Info</button>
+
+  <button id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="sidebar">
+    <button onclick="showView('main')">✦ &nbsp;Profile</button>
+    <button onclick="showView('payment')">◈ &nbsp;Payment</button>
+  </nav>
+
+  <div id="profile-card">
+    <div id="visitor-count"><span id="visitor-count-number">0</span> visitors</div>
+
+    <!-- MAIN VIEW -->
+    <div id="main-view" class="page-content active-page">
+      <div class="avatar-wrapper">
+        <div id="avatar-container">
+          <img id="avatar" src="avatar.jpg" alt="Wuys">
+        </div>
+        <div class="status-dot"></div>
+      </div>
+
+      <h1 id="welcome-title">Welcome, <em>world.</em></h1>
+      <p id="intro-text">Hi — I'm Wuys. This is my little corner.</p>
+      <div class="bio-divider"></div>
+      <p id="bio-text">All my info is right here.<br>Feel free to look around.</p>
+
+      <div id="social-links">
+        <a href="https://www.facebook.com/bbinaty.2007" target="_blank" rel="noopener">
+          <span class="inner"><img src="/logo/facebook.png" alt="Facebook"></span>
+          <span class="tip">Facebook</span>
+        </a>
+        <a href="https://www.tiktok.com/@huyden_" target="_blank" rel="noopener">
+          <span class="inner"><img src="/logo/tiktok.png" alt="TikTok"></span>
+          <span class="tip">TikTok</span>
+        </a>
+        <a href="https://www.roblox.com/users/8786162226/profile" target="_blank" rel="noopener">
+          <span class="inner"><img src="/logo/roblox.png" alt="Roblox"></span>
+          <span class="tip">Roblox</span>
+        </a>
+        <a href="http://wuysnee.atwebpages.com/" target="_blank" rel="noopener">
+          <span class="inner"><img src="/logo/myprofile.png" alt="My Website"></span>
+          <span class="tip">Website</span>
+        </a>
+      </div>
     </div>
 
-    <div id="profile-card">
-        <div id="visitor-count">Visitors: <span id="visitor-count-number">0</span></div>
-
-        <!-- MAIN PROFILE VIEW -->
-        <div id="main-view" class="page-content active-page">
-            <div id="avatar-container">
-                <img id="avatar" src="avatar.jpg" alt="Avatar"> 
+    <!-- PAYMENT VIEW -->
+    <div id="payment-view" class="page-content">
+      <div id="scan-me-title">Scan to Pay</div>
+      <img id="qr-code-img" src="qr.png" alt="QR Code">
+      <div id="bank-info-list">
+        <span class="bank-section-title">Bank Information · VND</span>
+        <div class="single-bank-card">
+          <div class="bank-name-row">
+            <div class="bank-dot"></div>
+            Techcombank
+          </div>
+          <div class="account-item">
+            <div>
+              <div class="account-label">Account Number</div>
+              <div class="account-number">1111 1112 042 007</div>
             </div>
-            
-            <h1 id="welcome-title">Welcome, world.</h1>
-            <h2 id="intro-text">Hi~ i'm Wuys, This is my bio.</h2>
-            <h3 id="bio-text">All of my info are here, you can check out for yourself.</h3>
-            
-            <div id="social-links">
-                <a href="https://www.facebook.com/bbinaty.2007" target="_blank" title="Facebook">
-                    <img src="/logo/facebook.png" alt="Facebook">
-                </a> 
-                <a href="https://www.tiktok.com/@huyden_" target="_blank" title="TikTok">
-                    <img src="/logo/tiktok.png" alt="TikTok">
-                </a>
-                <a href="https://www.roblox.com/users/8786162226/profile" target="_blank" title="Roblox">
-                    <img src="/logo/roblox.png" alt="Roblox">
-                </a>
-                <a href="http://wuysnee.atwebpages.com/" target="_blank" title="My Website">
-                    <img src="/logo/myprofile.png" alt="My Website">
-                </a>
-            </div>
+            <button class="copy-btn" onclick="copyText('11111112042007',this)">Copy</button>
+          </div>
+          <div class="account-holder">PHAM QUOC HUY</div>
         </div>
-
-        <!-- PAYMENT INFO VIEW - CHỈ GIỮ DUY NHẤT TECHCOMBANK, XÓA HOÀN TOÀN CÁC MỤC KHÁC -->
-        <div id="payment-view" class="page-content">
-            <div id="scan-me-title">Scan Me To Pay ↓</div>
-            <img id="qr-code-img" src="qr.png" alt="QR Code Payment"> 
-            
-            <div id="bank-info-list">
-                <strong>💎 Bank Information (Vietnam Currency)</strong>
-                <div class="single-bank-card">
-                    <div class="account-item">
-                        <span class="account-number" id="techcombank-single">🏦 Techcombank: 11111112042007</span>
-                        <button class="copy-btn" onclick="copyText('11111112042007', this)">Copy</button>
-                    </div>
-                    <div style="font-size: 0.75rem; color: #ddd; margin-top: 8px; text-align: center;">Account Holder: PHAM QUOC HUY</div>
-                </div>
-                <!-- ĐÃ XÓA: MB Bank, BIDV, Momo/ZaloPay, PayPal và mọi ngân hàng dư thừa. Chỉ giữ lại Techcombank đúng yêu cầu -->
-            </div>
-        </div>
+      </div>
     </div>
+
+  </div>
 </div>
-
-<footer id="copyright">©2025 By Wuys.</footer>
 
 <!-- MUSIC PLAYER -->
 <div id="music-footer">
-    <audio id="audio-element"></audio> 
-    <div id="track-info">
-      <div id="album-art"></div>
-      <div class="track-text">
-        <div id="track-name">Loading music...</div>
-        <div id="progress-time">0:00 / 0:00</div>
-      </div>
+  <audio id="audio-element"></audio>
+  <div id="track-info">
+    <div id="album-art"></div>
+    <div class="track-text">
+      <div id="track-name">Loading…</div>
+      <div id="progress-time">0:00 / 0:00</div>
     </div>
-    
-    <div id="controls">
-      <button onclick="player.toggleLoop()" id="loop-btn" title="Lặp lại bài hát hiện tại">🔄</button>
-      <button onclick="player.previousTrack()" title="Bài trước">⏮️</button>
-      <button onclick="player.stopTrack()" id="stop-btn" title="Dừng">⏹️</button>
-      <button onclick="player.togglePlayPause()" id="play-pause-btn" title="Phát/Tạm dừng">▶️</button>
-      <button onclick="player.nextTrack()" title="Bài tiếp">⏭️</button>
-    </div>
+  </div>
+  <div id="controls">
+    <button onclick="player.toggleLoop()" id="loop-btn" title="Loop">↻</button>
+    <button onclick="player.previousTrack()" title="Previous">⏮</button>
+    <button onclick="player.stopTrack()" title="Stop">⏹</button>
+    <button onclick="player.togglePlayPause()" id="play-pause-btn" title="Play">▶</button>
+    <button onclick="player.nextTrack()" title="Next">⏭</button>
+  </div>
 </div>
 
-<script>
-// BIẾN TOÀN CỤC CHO VIDEO LOAD
-let isVideoReady = false;
+<footer id="copyright">© 2025 Wuys</footer>
 
-// TIMER 3 GIÂY CHO VIDEO
+<script>
+/* VIDEO READY */
+let isVideoReady = false;
 setTimeout(() => {
-    isVideoReady = true;
-    document.getElementById('click-anywhere').textContent = "click anywhere to continue...";
+  isVideoReady = true;
+  document.getElementById('click-anywhere').textContent = 'click anywhere to enter';
 }, 3000);
 
-// Visitor Counter
-let visitorCount = localStorage.getItem('visitorCount') || 0;
-visitorCount = parseInt(visitorCount) + 1;
-localStorage.setItem('visitorCount', visitorCount);
-document.getElementById('visitor-count-number').textContent = visitorCount;
+/* VISITOR COUNTER */
+const vc = parseInt(localStorage.getItem('wuys_vc') || 0) + 1;
+localStorage.setItem('wuys_vc', vc);
+document.getElementById('visitor-count-number').textContent = vc;
 
-// Khai báo đối tượng quản lý nhạc (giữ nguyên danh sách nhạc phong phú)
+/* MUSIC PLAYER */
 const player = {
-    audio: null,
-    playPauseBtn: null,
-    loopBtn: null,
-    trackNameDisplay: null,
-    progressTimeDisplay: null,
-    isLoading: false, 
-    
-    tracks: [
-        { name: "Nếu Em Còn Tồn Tại - Trịnh Đình Quang", file: "music/song1.mp3" },
-        { name: "Tối - Dkayz & Brian", file: "music/song2.mp3" },
-        { name: "Đầu Đường Xó Chợ", file: "music/song3.mp3" },
-        { name: "Đoá Hoa", file: "music/song4.mp3" },
-        { name: "GOODBYE ROCKY", file: "music/song5.mp3" },
-        { name: " DONALD GOLD - ADAMN", file: "music/song6.mp3" },
-        { name: "Tham Phú Phụ Hồ", file: "music/song7.mp3" },
-        { name: "Thủ Đô Cypher - Beck Stage X Biti s Hunter ( RPT Orijinn, LOW G, RZMas, RPT MCK)", file: "music/song8.mp3" },
-        { name: "Wxrdie - TETVOVEN ", file: "music/song9.mp3" },
-        { name: "Rap Chậm Thôi ( #HNDCMM ) - RPT MCK x RPT Orijinn ft  Rz Ma$", file: "music/song10.mp3" },
-        { name: "Yello $osa - CHENCO TALK ft. Kwang Hy", file: "music/song11.mp3" },
-        { name: "Ducky Glizzy - Trốn làm sao được x @betekar x @yellososa", file: "music/song12.mp3" },
-        { name: "𝙊𝙂𝙍𝙔𝙕𝙀𝙆 - 𝙅𝙀𝙎𝙐𝙎 (𝙐𝙇𝙏𝙍𝘼 𝙎𝙇𝙊𝙒𝙀𝘿 + 𝙍𝙀𝙑𝙀𝙍𝘽)", file: "music/song13.mp3" },
-        { name: "Melodia Extraordinária - DJ LE4K (Slowed & Reverb)", file: "music/song14.mp3" },
-        { name: "MONTAGEM RUGADA", file: "music/song15.mp3" },
-        { name: "NO BATIDÃO (Slowed)", file: "music/song16.mp3" },
-        { name: "Ogryzek - AURA (super slowed + reverb)", file: "music/song17.mp3" },
-        { name: "Sayfalse, TRXVELER & DJ ALIM - DARE (Slowed)", file: "music/song18.mp3" },
-        { name: "Gà Quấn Giấy Bạc - VEGAS 2016 _ THÁI HOÀNG REMIX ", file: "music/song19.mp3" },
-        { name: "KHÓC CÙNG EM VER.2 _ THÁI HOÀNG REMIX", file: "music/song20.mp3" }
-    ],
-    currentTrackIndex: 0,
-    isPlaying: false,
+  audio:null, playPauseBtn:null, loopBtn:null,
+  trackNameEl:null, progressEl:null, albumArtEl:null,
+  isLoading:false, currentTrackIndex:0, isPlaying:false,
 
-    formatTime(seconds) {
-        if (isNaN(seconds)) return "0:00";
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
-        return min + ':' + (sec < 10 ? '0' : '') + sec;
-    },
+  tracks:[
+    {name:"Nếu Em Còn Tồn Tại — Trịnh Đình Quang",         file:"music/song1.mp3"},
+    {name:"Tối — Dkayz & Brian",                            file:"music/song2.mp3"},
+    {name:"Đầu Đường Xó Chợ",                               file:"music/song3.mp3"},
+    {name:"Đoá Hoa",                                        file:"music/song4.mp3"},
+    {name:"GOODBYE ROCKY",                                  file:"music/song5.mp3"},
+    {name:"DONALD GOLD — ADAMN",                            file:"music/song6.mp3"},
+    {name:"Tham Phú Phụ Hồ",                                file:"music/song7.mp3"},
+    {name:"Thủ Đô Cypher — Beck Stage × Biti's Hunter",     file:"music/song8.mp3"},
+    {name:"Wxrdie — TETVOVEN",                              file:"music/song9.mp3"},
+    {name:"Rap Chậm Thôi — RPT MCK × RPT Orijinn",         file:"music/song10.mp3"},
+    {name:"Yello $osa — CHENCO TALK ft. Kwang Hy",          file:"music/song11.mp3"},
+    {name:"Ducky Glizzy — Trốn làm sao được",               file:"music/song12.mp3"},
+    {name:"OGRYZEK — JESUS (ULTRA SLOWED + REVERB)",        file:"music/song13.mp3"},
+    {name:"Melodia Extraordinária — DJ LE4K (Slowed)",      file:"music/song14.mp3"},
+    {name:"MONTAGEM RUGADA",                                file:"music/song15.mp3"},
+    {name:"NO BATIDÃO (Slowed)",                            file:"music/song16.mp3"},
+    {name:"Ogryzek — AURA (super slowed + reverb)",         file:"music/song17.mp3"},
+    {name:"Sayfalse, TRXVELER & DJ ALIM — DARE (Slowed)",   file:"music/song18.mp3"},
+    {name:"Gà Quấn Giấy Bạc — VEGAS 2016 × THÁI HOÀNG",    file:"music/song19.mp3"},
+    {name:"KHÓC CÙNG EM VER.2 — THÁI HOÀNG REMIX",         file:"music/song20.mp3"}
+  ],
 
-    init() {
-        this.audio = document.getElementById('audio-element');
-        this.playPauseBtn = document.getElementById('play-pause-btn');
-        this.loopBtn = document.getElementById('loop-btn');
-        this.trackNameDisplay = document.getElementById('track-name');
-        this.progressTimeDisplay = document.getElementById('progress-time');
-        
-        this.audio.loop = false;
-        this.loopBtn.classList.remove('loop-active');
+  fmt(s){ if(isNaN(s))return'0:00'; return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'); },
 
-        this.audio.addEventListener('loadedmetadata', () => {
-            this.progressTimeDisplay.textContent = `0:00 / ${this.formatTime(this.audio.duration)}`;
-        });
+  init(){
+    this.audio       = document.getElementById('audio-element');
+    this.playPauseBtn= document.getElementById('play-pause-btn');
+    this.loopBtn     = document.getElementById('loop-btn');
+    this.trackNameEl = document.getElementById('track-name');
+    this.progressEl  = document.getElementById('progress-time');
+    this.albumArtEl  = document.getElementById('album-art');
+    this.audio.loop  = false;
+    this.audio.addEventListener('loadedmetadata',()=>{
+      this.progressEl.textContent=`0:00 / ${this.fmt(this.audio.duration)}`;
+    });
+    this.audio.ontimeupdate=()=>{
+      const p=this.audio.duration?(this.audio.currentTime/this.audio.duration*100):0;
+      document.getElementById('music-footer').style.setProperty('--prog',p+'%');
+      this.progressEl.textContent=`${this.fmt(this.audio.currentTime)} / ${this.fmt(this.audio.duration)}`;
+    };
+    this.albumArtEl.style.backgroundImage="url('album_default.jpg')";
+  },
 
-        this.audio.ontimeupdate = () => {
-            const currentTime = this.formatTime(this.audio.currentTime);
-            const duration = this.formatTime(this.audio.duration);
-            this.progressTimeDisplay.textContent = `${currentTime} / ${duration}`;
-        };
+  setPlay(v){
+    this.isPlaying=v;
+    this.playPauseBtn.textContent=v?'⏸':'▶';
+    this.albumArtEl.classList.toggle('playing',v);
+  },
 
-        this.setAlbumArt('album_default.jpg');
-    },
+  loadRandomTrack(){ this.loadTrack(Math.floor(Math.random()*this.tracks.length)); },
 
-    setAlbumArt(imageUrl) {
-        const albumArt = document.getElementById('album-art');
-        if (albumArt) albumArt.style.backgroundImage = `url('${imageUrl}')`;
-    },
+  loadTrack(i){
+    if(this.isLoading)return;
+    this.isLoading=true;
+    this.currentTrackIndex=((i%this.tracks.length)+this.tracks.length)%this.tracks.length;
+    const t=this.tracks[this.currentTrackIndex];
+    this.audio.pause(); this.audio.currentTime=0;
+    this.audio.src=t.file;
+    this.trackNameEl.textContent='⋯ '+t.name;
+    this.albumArtEl.style.backgroundImage="url('album_default.jpg')";
+    this.audio.onended=null; this.audio.oncanplaythrough=null; this.audio.onerror=null;
+    this.audio.addEventListener('canplaythrough',()=>{this.isLoading=false;this.trackNameEl.textContent=t.name;},{once:true});
+    this.audio.addEventListener('error',()=>{this.isLoading=false;this.trackNameEl.textContent='✕ '+t.name;setTimeout(()=>this.loadTrack(this.currentTrackIndex+1),2000);},{once:true});
+    this.audio.onended=()=>{if(!this.audio.loop)this.nextTrack();};
+    this.audio.play().then(()=>{this.isLoading=false;this.setPlay(true);}).catch(()=>{this.isLoading=false;this.setPlay(false);this.trackNameEl.textContent=t.name;});
+  },
 
-    updatePlayPauseButton(isCurrentlyPlaying) {
-        if (isCurrentlyPlaying) {
-            this.playPauseBtn.textContent = '⏸️';
-            this.playPauseBtn.title = 'Tạm dừng';
-        } else {
-            this.playPauseBtn.textContent = '▶️';
-            this.playPauseBtn.title = 'Phát';
-        }
-    },
-
-    loadRandomTrack() {
-        if (this.tracks.length === 0) return;
-        const randomIndex = Math.floor(Math.random() * this.tracks.length);
-        this.loadTrack(randomIndex);
-    },
-
-    loadTrack(index) {
-        if (this.isLoading) return;
-        this.isLoading = true;
-        if (this.tracks.length === 0) {
-            this.trackNameDisplay.textContent = "Không có bài hát nào.";
-            this.isLoading = false;
-            return;
-        }
-        
-        this.currentTrackIndex = index % this.tracks.length;
-        if (this.currentTrackIndex < 0) this.currentTrackIndex = this.tracks.length - 1;
-
-        const track = this.tracks[this.currentTrackIndex];
-        if (this.audio) {
-            this.audio.pause();
-            this.audio.currentTime = 0;
-        }
-        this.audio.src = track.file;
-        this.trackNameDisplay.textContent = "⏳ " + track.name;
-        this.setAlbumArt('album_default.jpg');
-        
-        const onLoaded = () => {
-            this.isLoading = false;
-            this.trackNameDisplay.textContent = track.name;
-        };
-        const onError = () => {
-            this.isLoading = false;
-            this.trackNameDisplay.textContent = "❌ Lỗi: " + track.name;
-            setTimeout(() => this.loadTrack(this.currentTrackIndex), 2000);
-        };
-        this.audio.onended = null;
-        this.audio.oncanplaythrough = null;
-        this.audio.onerror = null;
-        this.audio.addEventListener('canplaythrough', onLoaded, { once: true });
-        this.audio.addEventListener('error', onError, { once: true });
-        this.audio.onended = () => { if (!this.audio.loop) this.nextTrack(); };
-        
-        this.audio.play().then(() => {
-            this.isPlaying = true;
-            this.updatePlayPauseButton(true);
-        }).catch(error => {
-            this.isLoading = false;
-            this.isPlaying = false;
-            this.updatePlayPauseButton(false);
-            this.trackNameDisplay.textContent = "▶️ " + track.name;
-        });
-    },
-
-    togglePlayPause() {
-        if (this.isLoading) return;
-        if (this.audio.paused) {
-            this.audio.play().then(() => {
-                this.isPlaying = true;
-                this.updatePlayPauseButton(true);
-            }).catch(() => {});
-        } else {
-            this.audio.pause();
-            this.isPlaying = false;
-            this.updatePlayPauseButton(false);
-        }
-    },
-
-    stopTrack() {
-        if (this.isLoading) return;
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this.isPlaying = false;
-        this.updatePlayPauseButton(false);
-    },
-
-    toggleLoop() {
-        if (this.isLoading) return;
-        this.audio.loop = !this.audio.loop;
-        this.loopBtn.classList.toggle('loop-active', this.audio.loop);
-        this.loopBtn.title = this.audio.loop ? 'Đang lặp lại bài hát' : 'Lặp lại bài hát hiện tại';
-    },
-
-    nextTrack() {
-        if (this.isLoading) return;
-        if (this.audio.loop) this.toggleLoop();
-        this.loadTrack(this.currentTrackIndex + 1);
-    },
-
-    previousTrack() {
-        if (this.isLoading) return;
-        if (this.audio.loop) this.toggleLoop();
-        this.loadTrack(this.currentTrackIndex - 1);
-    }
+  togglePlayPause(){
+    if(this.isLoading)return;
+    if(this.audio.paused){this.audio.play().then(()=>this.setPlay(true)).catch(()=>{});}
+    else{this.audio.pause();this.setPlay(false);}
+  },
+  stopTrack(){if(this.isLoading)return;this.audio.pause();this.audio.currentTime=0;this.setPlay(false);},
+  toggleLoop(){
+    if(this.isLoading)return;
+    this.audio.loop=!this.audio.loop;
+    this.loopBtn.classList.toggle('loop-active',this.audio.loop);
+  },
+  nextTrack(){if(this.isLoading)return;if(this.audio.loop)this.toggleLoop();this.loadTrack(this.currentTrackIndex+1);},
+  previousTrack(){if(this.isLoading)return;if(this.audio.loop)this.toggleLoop();this.loadTrack(this.currentTrackIndex-1);}
 };
 
-window.onload = () => {
-    player.init();
-};
+window.onload=()=>player.init();
 
-function showLayer2() {
-    if (!isVideoReady) {
-        document.getElementById('click-anywhere').textContent = "🔄 i'm still loading, please wait...";
-        return;
-    }
-    document.getElementById('layer1').style.opacity = 0;
-    document.getElementById('layer1').style.pointerEvents = 'none';
-    const layer2 = document.getElementById('layer2');
-    layer2.style.opacity = 1;
-    layer2.style.pointerEvents = 'auto';
-    const musicFooter = document.getElementById('music-footer');
-    musicFooter.classList.add('active');
-    player.loadRandomTrack();
-    showView('main');
+/* NAVIGATION */
+function showLayer2(){
+  if(!isVideoReady){document.getElementById('click-anywhere').textContent='⋯ still loading, please wait';return;}
+  const l1=document.getElementById('layer1');
+  l1.style.opacity='0'; l1.style.pointerEvents='none';
+  const l2=document.getElementById('layer2');
+  l2.style.opacity='1'; l2.style.pointerEvents='auto';
+  document.getElementById('music-footer').classList.add('active');
+  player.loadRandomTrack();
+  showView('main');
 }
 
-function showView(viewName) {
-    document.getElementById('sidebar').classList.remove('active');
-    const views = document.querySelectorAll('.page-content');
-    views.forEach(view => view.classList.remove('active-page'));
-    const targetView = document.getElementById(viewName + '-view');
-    if (targetView) targetView.classList.add('active-page');
+function showView(n){
+  document.getElementById('sidebar').classList.remove('active');
+  document.querySelectorAll('.page-content').forEach(v=>v.classList.remove('active-page'));
+  const t=document.getElementById(n+'-view');
+  if(t)t.classList.add('active-page');
 }
 
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active');}
 
-function copyText(textToCopy, buttonElement) {
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        const originalText = buttonElement.textContent;
-        buttonElement.textContent = '✓ Copied!';
-        buttonElement.style.backgroundColor = '#2e7d32';
-        setTimeout(() => {
-            buttonElement.textContent = originalText;
-            buttonElement.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-        }, 1800);
-    }).catch(() => alert('Sao chép thủ công: ' + textToCopy));
+document.addEventListener('click',e=>{
+  const sb=document.getElementById('sidebar');
+  const hb=document.getElementById('hamburger-btn');
+  if(sb.classList.contains('active')&&!sb.contains(e.target)&&!hb.contains(e.target))
+    sb.classList.remove('active');
+});
+
+/* COPY */
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    const o=btn.textContent;
+    btn.textContent='✓ Copied'; btn.style.background='#14532d'; btn.style.borderColor='#14532d';
+    setTimeout(()=>{btn.textContent=o;btn.style.background='';btn.style.borderColor='';},1800);
+  }).catch(()=>alert('Copy manually: '+text));
 }
 </script>
-
 </body>
 </html>
